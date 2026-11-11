@@ -106,7 +106,7 @@ OpenCode 本機 Skills 收藏庫。所有 skill 皆為 MIT 授權，適用於 op
 | [`github-skill-sync`](github-skill-sync/SKILL.md) | 🍎 | 同步本機 OpenCode skills（`~/.config/opencode/skills/`）與 GitHub 上的 `yd7148/OpenCode_skill` 收藏庫。本 skill 同時管理**下載（Gi…  | 無額外依賴（git / rsync / ssh） |
 | [`mac-disk-cleanup`](mac-disk-cleanup/SKILL.md) | 🍎 | 掃描與清理 macOS 磁碟空間：定位大目錄（家目錄、Applications、/Library/Application Support、CloudStorage、/private/var）、辨識可安全刪除的快取與孤兒…  | 無額外依賴（macOS 內建 du / df / rm） |
 | [`network-port-check`](network-port-check/SKILL.md) | 🍎 | 檢查本機對外網路連線狀態（Windows PowerShell 與 macOS bash 雙版本）：哪些 TCP port 通、哪些被防火牆擋、遠端服務（RDP/SSH/VNC）能否接通、有哪些網站被擋、TLS 是否被…  | 無額外依賴（macOS 需 curl / nc / dig / openssl / swiftc） |
-| [`opencode-session-auto-name`](opencode-session-auto-name/SKILL.md) | 🍎 | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用 opencode-auto-name plugin（0 Token、純規則式、與模型無關），並記錄原…  | npm 套件：opencode-auto-name（0 Token） |
+| [`opencode-session-auto-name`](opencode-session-auto-name/SKILL.md) | 🍎 | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零…  | npm 套件：opencode-auto-name（0 Token） |
 | [`opencode-usage`](opencode-usage/SKILL.md) | 🍎 | Monitor and report OpenCode usage, quota, and local resource consumption.  | 純 Python：標準庫（跨平台） |
 | [`py-binary-deps`](py-binary-deps/SKILL.md) | 🍎 | Use when a CLI tool or native binary must be installed on this machine — ffmpeg, yt-dlp, ffprobe, node, uv, r…  | 無額外依賴（Python + pip / uv；ffmpeg 需於 PATH） |
 
@@ -217,7 +217,7 @@ python3 -m venv .venv
 | [`on24-video-download`](on24-video-download/SKILL.md) | 🍎 | 下載 ON24 線上研討會活動（event.on24.com）的影片、投影片與字幕，並從下載的主影片自動提取「投影片 PDF / 投影片影片 / 時間軸摘要」。涵蓋公開媒體組態 API、download/CDN URL…  |
 | [`open-computer-use`](open-computer-use/SKILL.md) | 🍎 | Platform-neutral guidance for using Open Computer Use, the open-source Computer Use MCP server and CLI for ma…  |
 | [`opencode-browser`](opencode-browser/SKILL.md) | 🍎 | 用 OpenCode 外掛 `@different-ai/opencode-browser`（OpenCode Browser）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿用同一個 prof…  |
-| [`opencode-session-auto-name`](opencode-session-auto-name/SKILL.md) | 🍎 | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用 opencode-auto-name plugin（0 Token、純規則式、與模型無關），並記錄原…  |
+| [`opencode-session-auto-name`](opencode-session-auto-name/SKILL.md) | 🍎 | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零…  |
 | [`opencode-usage`](opencode-usage/SKILL.md) | 🍎 | Monitor and report OpenCode usage, quota, and local resource consumption.  |
 | [`pdf-reader`](pdf-reader/SKILL.md) | 🍎 | 讀取 PDF 檔案的內容並輸出成 Markdown 摘要報告。文字型 PDF 用 PyMuPDF 直接抽取（含中文）；掃描/圖片型 PDF 自動渲染成 PNG 並以 RapidOCR 辨識；輸出以 opencc 轉為繁…  |
 | [`pptx`](pptx/SKILL.md) | 🍎 | Use when generating or manipulating PowerPoint presentations programmatically.  |

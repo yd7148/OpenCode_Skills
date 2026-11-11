@@ -1,0 +1,21 @@
+{
+  "name": "opencode-auto-name",
+  "version": "2.0.0",
+  "description": "OpenCode V2 plugin：session 標題自動取自第一次使用者 prompt 的總結（純規則式、0 Token）",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "session",
+    "title",
+    "auto-name"
+  ]
+}

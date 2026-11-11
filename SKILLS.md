@@ -75,7 +75,7 @@
 | 32 | [`github-skill-sync`](#32-github-skill-sync) | 同步本機 OpenCode skills（`~/.config/opencode/skills/`）與 GitHub 上的 `yd7148/OpenCode_skill` 收藏庫。本 skill 同時管理**下載（Gi… |
 | 33 | [`mac-disk-cleanup`](#33-mac-disk-cleanup) | 掃描與清理 macOS 磁碟空間：定位大目錄（家目錄、Applications、/Library/Application Support、CloudStorage、/private/var）、辨識可安全刪除的快取與孤兒… |
 | 34 | [`network-port-check`](#34-network-port-check) | 檢查本機對外網路連線狀態（Windows PowerShell 與 macOS bash 雙版本）：哪些 TCP port 通、哪些被防火牆擋、遠端服務（RDP/SSH/VNC）能否接通、有哪些網站被擋、TLS 是否被… |
-| 35 | [`opencode-session-auto-name`](#35-opencode-session-auto-name) | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用 opencode-auto-name plugin（0 Token、純規則式、與模型無關），並記錄原… |
+| 35 | [`opencode-session-auto-name`](#35-opencode-session-auto-name) | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零… |
 | 36 | [`opencode-usage`](#36-opencode-usage) | Monitor and report OpenCode usage, quota, and local resource consumption. |
 | 37 | [`py-binary-deps`](#37-py-binary-deps) | Use when a CLI tool or native binary must be installed on this machine — ffmpeg, yt-dlp, ffprobe, node, uv, r… |
 | 38 | [`comfyui-qwen-image-edit`](#38-comfyui-qwen-image-edit) | 用 ComfyUI + Qwen-Image-2.1 做圖像編輯（改圖／換裝／服裝轉移／多圖參考）與文生圖，產出可直接拖入 ComfyUI 的工作流 JSON，並用 /prompt API 批次執行。涵蓋兩個會「不報錯… |
