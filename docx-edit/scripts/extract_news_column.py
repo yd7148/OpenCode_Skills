@@ -31,8 +31,10 @@ sys.stdout.reconfigure(encoding='utf-8')
 
 W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
 
+# Default marker text. If a document's heading uses different wording,
+# override it with -m/--marker (rows that match nothing yield EMPTY output).
 DEFAULTS = dict(
-    marker='碳化矽相關新聞與市場消息',
+    marker='SiC相關新聞與市場消息',
     header='執行結果及說明',
 )
 
@@ -41,7 +43,7 @@ TOPIC_HDRS = ('研開項目', '題目', '案號', '項次', '序號')
 
 # paragraphs that merely repeat row metadata / the project name
 NOISE = re.compile(
-    r'^(碳化矽相關新聞與市場消息|項次|案號\(技術資料編號\)|'
+    r'^(SiC相關新聞與市場消息|項次|案號\(技術資料編號\)|'
     r'工作日期\(?立案日期/預完日\)?|研開項目|負責人|執行結果及說明)$')
 
 HEAD = re.compile(r'^[一二三四五六七八九十]+\s*[.．、,，:：]\s*')

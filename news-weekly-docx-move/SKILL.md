@@ -1,6 +1,6 @@
 ---
 name: news-weekly-docx-move
-description: Use when the user asks to bulk-move, copy, collect, or sync the weekly news review .docx files (個人週報 新聞(OK).docx) from the SiC project network share (\\<CORP_SERVER_IP>\03_SiC專案\碳化矽立案資料\個人週報) into a local review folder such as <PROJECT_ROOT_A>\Projects\<YYYY-MM>-news-review. Covers recursive wildcard discovery, Move-Item -Force, moving the already-hand-copied demo file too, and the count/integrity verification pass.
+description: Use when the user asks to bulk-move, copy, collect, or sync the weekly news review .docx files (個人週報 新聞(OK).docx) from the SiC project network share (\\<CORP_SERVER_IP>\03_SiC專案\SiC立案資料\個人週報) into a local review folder such as <PROJECT_ROOT_A>\Projects\<YYYY-MM>-news-review. Covers recursive wildcard discovery, Move-Item -Force, moving the already-hand-copied demo file too, and the count/integrity verification pass.
 
 license: MIT
 ---
@@ -12,7 +12,7 @@ license: MIT
 
 ## 固定路徑
 
-- 來源（遞迴根目錄）：`\\<CORP_SERVER_IP>\03_SiC專案\碳化矽立案資料\個人週報`
+- 來源（遞迴根目錄）：`\\<CORP_SERVER_IP>\03_SiC專案\SiC立案資料\個人週報`
   - 結構：`個人週報\<年>週報\<月>\<週次(日期範圍)>\<年月>_<週次>-新聞(OK).docx`
   - 檔名含全形括號、中文字，**不要**用 `-Filter` 以外的方式硬編碼檔名。
 - 目的地：`<PROJECT_ROOT_A>\Projects\<YYYY-MM>-news-review`（目錄不存在時先 `New-Item -ItemType Directory -Force`）。
@@ -36,7 +36,7 @@ license: MIT
 ```powershell
 $ErrorActionPreference='Continue'
 $dst='<PROJECT_ROOT_A>\Projects\2026-09-news-review'
-$src='\\<CORP_SERVER_IP>\03_SiC專案\碳化矽立案資料\個人週報'
+$src='\\<CORP_SERVER_IP>\03_SiC專案\SiC立案資料\個人週報'
 New-Item -ItemType Directory -Force -Path $dst | Out-Null
 $files=Get-ChildItem -Path $src -Recurse -Filter "*新聞(OK).docx" -ErrorAction SilentlyContinue
 $ok=0;$fail=@()
