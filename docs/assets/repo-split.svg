@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="Microsoft JhengHei,Segoe UI,sans-serif">
+<defs>
+  <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+    <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+  </marker>
+</defs>
+<style>
+  .t{font-size:15px;font-weight:bold;fill:#0f172a}
+  .s{font-size:11.5px;fill:#334155}
+  .h{font-size:13px;font-weight:bold;fill:#0f172a}
+  .bad{font-size:12px;fill:#b91c1c}
+  .good{font-size:12px;fill:#15803d}
+  .box{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.5;rx:6}
+  .badbox{fill:#fef2f2;stroke:#dc2626;stroke-width:1.5;rx:6}
+  .goodbox{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.5;rx:6}
+  .priv{fill:#fffbeb;stroke:#d97706;stroke-width:1.5;rx:6}
+  .pub{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.5;rx:6}
+  .mask{fill:#f5f3ff;stroke:#7c3aed;stroke-width:1.5;rx:6}
+  .hd{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.2}
+  .ok{font-size:11.5px;fill:#15803d}
+  .no{font-size:11.5px;fill:#b91c1c}
+  .c1{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.8}
+  .c2{fill:#fffbeb;stroke:#d97706;stroke-width:1.8}
+  .c3{fill:#fef2f2;stroke:#dc2626;stroke-width:1.8}
+</style>
+<rect width="900" height="480" fill="#ffffff"/>
+<text x="450" y="30" class="t" text-anchor="middle">OpenCode_skill 內容分流：私有保留 vs 公開釋出</text>
+
+<rect x="330" y="55" width="240" height="72" class="box"/>
+<text x="450" y="80" class="h" text-anchor="middle">OpenCode_skill（來源 repo）</text>
+<text x="450" y="99" class="s" text-anchor="middle">42 skill + 18 份維運紀錄</text>
+<text x="450" y="117" class="s" text-anchor="middle">gh api：isPrivate = true</text>
+
+<line x1="400" y1="127" x2="250" y2="175" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+<line x1="500" y1="127" x2="650" y2="175" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+
+<rect x="60" y="180" width="380" height="215" class="priv"/>
+<text x="80" y="205" class="h">🔒 私有版（維持 PRIVATE）</text>
+<text x="80" y="228" class="s">yd7148/OpenCode_skill</text>
+<text x="80" y="252" class="s">保留：</text>
+<text x="92" y="270" class="s">• 18 份個人維運紀錄（內網事件、資安評估）</text>
+<text x="92" y="288" class="s">• hcl-notes-forward（公司專用轉寄自動化）</text>
+<text x="92" y="306" class="s">• records/（11 封實際轉寄紀錄）</text>
+<text x="92" y="324" class="s">• notes_salary.py + salary-analysis.md</text>
+<text x="92" y="342" class="s">• comsol（MCP 客製分析）</text>
+<text x="92" y="360" class="s">• opencode-env（全域環境範本）</text>
+<text x="92" y="384" class="s">理由：含雇主資產與個人資料，不適合公開</text>
+
+<rect x="460" y="180" width="380" height="215" class="pub"/>
+<text x="480" y="205" class="h">🌐 公開版（新建 PUBLIC）</text>
+<text x="480" y="228" class="s">yd7148/OpenCode_Skills</text>
+<text x="480" y="252" class="s">收錄：</text>
+<text x="492" y="270" class="s">• 39 支通用型 skill（工具／流程／參考）</text>
+<text x="492" y="288" class="s">• README.md / SKILLS.md（gen_index.py 產生）</text>
+<text x="492" y="306" class="s">• LICENSE / .gitattributes / scripts/</text>
+<text x="492" y="330" class="s">處理：全部真實值 → 佔位符</text>
+<text x="492" y="352" class="s"><HOST_IP> → &lt;HOST_IP&gt;</text>
+<text x="492" y="370" class="s"><BONUS_AMOUNT> → &lt;BONUS_AMOUNT&gt;（已刪）</text>
+<text x="492" y="388" class="s">公司識別字串 → &lt;CORP_NAME&gt;</text>
+
+<rect x="60" y="410" width="780" height="55" class="mask"/>
+<text x="80" y="433" class="h">驗證閘門</text>
+<text x="80" y="453" class="s">git add 前 + push 前雙掃描：真實內網位址／主機名稱／憑證／公司識別字串 → 0 命中；gen_index.py --check 通過</text>
+</svg>

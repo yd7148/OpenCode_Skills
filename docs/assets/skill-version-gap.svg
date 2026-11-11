@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="Microsoft JhengHei,Segoe UI,sans-serif">
+<defs>
+  <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+    <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+  </marker>
+</defs>
+<style>
+  .t{font-size:15px;font-weight:bold;fill:#0f172a}
+  .s{font-size:11.5px;fill:#334155}
+  .h{font-size:13px;font-weight:bold;fill:#0f172a}
+  .bad{font-size:12px;fill:#b91c1c}
+  .good{font-size:12px;fill:#15803d}
+  .box{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.5;rx:6}
+  .badbox{fill:#fef2f2;stroke:#dc2626;stroke-width:1.5;rx:6}
+  .goodbox{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.5;rx:6}
+  .priv{fill:#fffbeb;stroke:#d97706;stroke-width:1.5;rx:6}
+  .pub{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.5;rx:6}
+  .mask{fill:#f5f3ff;stroke:#7c3aed;stroke-width:1.5;rx:6}
+  .hd{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.2}
+  .ok{font-size:11.5px;fill:#15803d}
+  .no{font-size:11.5px;fill:#b91c1c}
+  .c1{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.8}
+  .c2{fill:#fffbeb;stroke:#d97706;stroke-width:1.8}
+  .c3{fill:#fef2f2;stroke:#dc2626;stroke-width:1.8}
+</style>
+<rect width="900" height="400" fill="#ffffff"/>
+<text x="450" y="28" class="t" text-anchor="middle">browser-control SKILL.md：上游 main 與本機 0.8.4 的功能落差</text>
+
+<rect x="30" y="48" width="270" height="140" class="box"/>
+<text x="45" y="72" class="h">上游 main（2026-10-25）</text>
+<text x="45" y="94" class="s">文件基準，但功能未隨套件發布</text>
+<text x="45" y="116" class="s">• execute --rm（one-shot 收分頁）</text>
+<text x="45" y="136" class="s">• oc-$OPENCODE_SESSION_ID 沿用</text>
+<text x="45" y="156" class="s">• waitForEvent("download") 攔截</text>
+<text x="45" y="176" class="s">• BROWSER_CONTROL_SHUTDOWN_TIMEOUT_MS</text>
+
+<rect x="330" y="48" width="270" height="140" class="box"/>
+<text x="345" y="72" class="h">本機 npm 0.8.4（2026-10-06）</text>
+<text x="345" y="94" class="s">實際可執行版本</text>
+<text x="345" y="116" class="s">• 15 分 idle TTL　✓ 已有</text>
+<text x="345" y="136" class="s">• Relay is draining　✓ 已有</text>
+<text x="345" y="156" class="s">• --rm　✗ Unrecognized flag</text>
+<text x="345" y="176" class="s">• download 攔截　✗ 無 Content-Disposition</text>
+
+<rect x="630" y="48" width="240" height="140" class="goodbox"/>
+<text x="645" y="72" class="h" fill="#15803d">處置：分級標註</text>
+<text x="645" y="94" class="s">SKILL.md 以上游 main 為內容</text>
+<text x="645" y="114" class="s">基準，但新增〈本機版本</text>
+<text x="645" y="134" class="s">相容性〉表格逐項標註</text>
+<text x="645" y="156" class="good">❌ 標記者不要嘗試</text>
+<text x="645" y="176" class="good">✅ 標記者可直接使用</text>
+
+<line x1="300" y1="118" x2="322" y2="118" stroke="#334155" stroke-width="2" marker-end="url(#ar)"/>
+
+<rect x="30" y="210" width="840" height="165" class="mask"/>
+<text x="45" y="235" class="h">為什麼不能直接貼上游 SKILL.md</text>
+<text x="45" y="258" class="s">上游文件描述的是「尚未發布到 npm」的版本。若原樣貼上，agent 會被教導使用</text>
+<text x="45" y="278" class="s">本機不存在的旗標與行為 —— 指令會直接報錯，且 skill 的「可用性」判斷全部失準。</text>
+<text x="45" y="304" class="s">實測證據：</text>
+<text x="58" y="324" class="s">$ browser-control execute --rm 'return 1'</text>
+<text x="68" y="342" class="s">Unrecognized flag: --rm in command browser-control execute</text>
+<text x="58" y="362" class="s">$ grep OPENCODE_SESSION_ID dist/cli.js　→ False（字串不存在）</text>
+</svg>
