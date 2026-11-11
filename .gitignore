@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Codex 自動產生的環境描述檔（非本 repo 內容）
+.codex/

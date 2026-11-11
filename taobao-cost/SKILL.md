@@ -1,0 +1,79 @@
+---
+name: taobao-cost
+description: Use when the user works with 淘obao (Taobao) exported order data or 淘寶費用計算明細 spreadsheets. Covers extracting orders (商品名稱, 實付金額, 物流公司與單號) from 訂單數據.xlsx, matching each tracking number against a weight list, and filling the 淘寶費用計算明細 R0 template in order (商品名稱/實付金額 RMB/重量) and saving as R1. Trigger on "整理訂單", "訂單數據提取", "淘寶訂單整理", "淘寶費用明細", "填寫費用明細", "費用計算明細填寫", "填入訂單資料", "填 R0 存 R1", "將訂單卡片填入 Excel".
+license: MIT
+---
+
+# taobao-cost-fill — 淘寶費用計算明細填寫
+
+## 目的
+把依序編號的訂單卡片（含商品名稱、實付金額、物流、重量）填入既有的「淘寶費用計算明細」Excel 樣板（`*-taobao-淘寶-R0.xlsx`），依序寫入商品列，並另存成 `*-taobao-淘寶-R1.xlsx`。
+
+## 前置需求（依賴）
+- Python 3 + openpyxl，安裝於本 skill 專用 venv：
+  ```bash
+  cd <skill>/taobao-cost-fill
+  python3 -m venv .venv
+  .venv/bin/pip install openpyxl
+  ```
+- 執行時一律用 `.venv/bin/python`。
+
+## 輸入
+1. **R0 樣板**：`2026-09-05-taobao-淘寶-R0.xlsx`，內含多個分頁（歷史各期），目標分頁名稱即日期（如 `2026-09-05`）。
+2. **訂單卡片清單**（markdown，每筆一行），格式：
+   ```
+   ## #02乐谱架带包可升降折叠便携式谱台式桌架小提琴古筝吉他二胡立式  實付金額 ￥16.00  极兔速递 JT3175106025237  JT3175106025237 台灣 0.920
+   ```
+   - 第一段為商品名稱；`￥` 後為實付金額（RMB）；結尾若有 `台灣 數字` 則為重量，無此段表示無重量資料。
+
+## 樣板結構
+- row1：標題（合併 B:K）；row2–3：表頭（項次｜項目｜單價 RMB/NTD｜匯率｜成本者｜重量｜分攤 運費/關稅｜總費用）。
+- **row4 起為第一筆商品**（項次=1）。
+- 欄位對應：
+  - B=項次、C=項目（商品名稱）、D=單價 RMB（實付金額）、E=單價 NTD、F=匯率（公式）、G=成本者、H=重量、I/J/K=公式。
+- 商品區下方有「達飛集運運費」行（G=『運費』）與「賴政府關稅」行，最後為「合計」行（公式，勿動）。
+- 樣板可能殘留**上一期的幽靈項次**（例如商品區尾端的 26/27/28），填入後需清除。
+
+## 填入規則
+- 依序把卡片 #01..#NN 對應到 row4 起的每一列，並同步填 B 項次。
+- C=商品名稱、D=實付金額（RMB 數值）、H=重量（卡片有 `台灣 數字` 才填；無則留空）。
+- E（單價 NTD）與 G（成本者）**不填**，維持樣板原樣。
+- 填完後，商品區與「運費/關稅」行之間殘留的幽靈項次數字要清除（B 欄設空）。
+- 存檔為 `*-R1.xlsx`，**不覆蓋 R0**。
+
+## 執行
+套用內附 `fill_cost_sheet.py`：
+
+```bash
+.venv/bin/python fill_cost_sheet.py \
+  --in  ~/Downloads/.../2026-09-05-taobao-淘寶-R0.xlsx \
+  --out ~/Downloads/.../2026-09-05-taobao-淘寶-R1.xlsx \
+  --sheet 2026-09-05 \
+  --cards orders.md
+```
+
+`--cards` 省略時由 stdin 讀取卡片行。若 `--out` 省略，預設與 `--in` 同名但尾綴 `-R1.xlsx`。
+
+> 注意：路徑建議都用絕對路徑（含 `--in`/`--out`/`--cards`），因呼叫端工作目錄可能不同。
+
+## 驗證
+- 讀回 R1，確認 項次 1..N 與 C/D/H 一一對應、總筆數與卡片數一致。
+- 合計／運費／關稅行及公式保留原樣。
+- 幽靈項次已清空。
+
+## 實務陷阱與筆記
+- **重量必填 H 欄（重量），勿填入 G（成本者）欄**。分攤運費公式讀取 H 欄（`=IFERROR(H4/$H$36*$I$41,"0")`）；若誤填 G，分攤運費會算成 0。
+- fill 腳本只覆寫 B/C/D/H，**不清理其他欄位的殘留**。若使用者已手動填了第一筆（例如誤將 3.52 填在 G4），跑完腳本後需再補「清除 G4」這步，並確認 H4 已寫入。
+- 若來源檔目前**在 Excel 中開啟**（同目錄出現 `~$` 開頭的暫存檔），不要直接覆寫該檔，一律另存 R1，並提醒使用者由 R1 使用。
+- 檔名為 `-R00.xlsx`（雙零）時，`--out` 自動推導會失敗（正則只認 `-R0.xlsx`），必須顯式給 `--out`。
+
+---
+
+## 整併子功能索引（本 skill 由多個舊 skill 合併）
+
+| 子功能 | 詳細內容 | 觸發情境 |
+|---|---|---|
+| 費用明細填寫 | `（本文件主體）` | fill_cost_sheet.py 依訂單卡片填 R0 存 R1 |
+| 訂單資料提取 | `reference/taobao-order-extract.md` | 訂單數據.xlsx → 編號訂單卡片 markdown，含物流單號配重量 |
+
+> 讀取子功能時請先 Read 對應的 reference 檔案，內容為原 skill 完整說明。

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenCode Usage Monitor</title>
+<meta name="refresh" content="600">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0c10; --bg2:#0f1218; --card:#12151c; --card2:#161a23;
+  --line:#222836; --line2:#2c3342;
+  --tx:#e6e9ef; --tx2:#9aa3b2; --tx3:#646d7d;
+  --a:#7c9cff; --b:#5ad1a5; --c:#f0b45f; --d:#e0729b; --e:#a78bfa;
+  --ok:#3ecf8e; --warn:#f0b45f; --err:#f2637e;
+  --r:14px; --sh:0 1px 0 rgba(255,255,255,.03),0 12px 32px -18px rgba(0,0,0,.9);
+}
+[data-theme="light"]{
+  --bg:#f4f6fa; --bg2:#eceff5; --card:#ffffff; --card2:#f7f9fc;
+  --line:#e3e8f0; --line2:#d3dae5;
+  --tx:#141922; --tx2:#5b6474; --tx3:#8a93a3;
+  --a:#3f6ae0; --b:#12a97a; --c:#c07c15; --d:#d14d80; --e:#7c5cf0;
+  --sh:0 1px 2px rgba(16,24,40,.05),0 12px 28px -20px rgba(16,24,40,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{
+  background:
+    radial-gradient(1100px 620px at 12% -12%, color-mix(in srgb,var(--a) 14%, transparent), transparent 62%),
+    radial-gradient(900px 520px at 100% 0%, color-mix(in srgb,var(--e) 11%, transparent), transparent 58%),
+    var(--bg);
+  color:var(--tx); font:14px/1.55 "Segoe UI Variable Display","Segoe UI",-apple-system,
+  "Noto Sans TC","Microsoft JhengHei UI",system-ui,sans-serif; min-height:100vh;
+}
+.wrap{max-width:1400px;margin:0 auto;padding:34px 26px 64px}
+header{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--a),var(--e) 70%);
+  box-shadow:0 6px 20px -8px var(--a); font-weight:700;color:#fff;letter-spacing:-.5px
+}
+h1{font-size:19px;font-weight:650;letter-spacing:-.2px}
+.sub{color:var(--tx3);font-size:12px;margin-top:2px;letter-spacing:.2px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.pill{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;
+  background:var(--card);border:1px solid var(--line);color:var(--tx2);font-size:12px
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 22%,transparent)}
+.dot.stale{background:var(--warn);box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 22%,transparent)}
+.btn{
+  padding:7px 13px;border-radius:9px;background:var(--card);border:1px solid var(--line);
+  color:var(--tx2);cursor:pointer;font:inherit;font-size:12px;transition:.16s
+}
+.btn:hover{border-color:var(--line2);color:var(--tx);transform:translateY(-1px)}
+section{margin-top:30px}
+h2{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:14px}
+.card{
+  background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);
+  border-radius:var(--r);padding:16px 17px;box-shadow:var(--sh);position:relative;overflow:hidden
+}
+.card::after{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--k,var(--a)),transparent 78%);opacity:.85}
+.k-label{color:var(--tx3);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.k-val{font-size:27px;font-weight:660;letter-spacing:-1px;margin-top:7px;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.k-unit{font-size:14px;color:var(--tx3);font-weight:500;margin-left:3px}
+.k-sub{color:var(--tx2);font-size:12px;margin-top:6px}
+.k-sub b{color:var(--tx);font-weight:600}
+.grid2{display:grid;grid-template-columns:1.62fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:1020px){.grid2,.grid3{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px 10px;box-shadow:var(--sh)}
+.panel h3{font-size:13.5px;font-weight:600;margin-bottom:2px}
+.panel .hint{font-size:11.5px;color:var(--tx3);margin-bottom:12px}
+.chart{position:relative;height:250px}
+.chart.tall{height:300px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{
+  text-align:left;color:var(--tx3);font-weight:600;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;padding:0 10px 9px;border-bottom:1px solid var(--line);white-space:nowrap
+}
+td{padding:9px 10px;border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent);
+  font-variant-numeric:tabular-nums;color:var(--tx2)}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:color-mix(in srgb,var(--a) 6%,transparent)}
+td.name{color:var(--tx);font-weight:550}
+td.num{text-align:right}
+.bar{height:5px;border-radius:3px;background:var(--line);overflow:hidden;min-width:56px}
+.bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--a),var(--e))}
+.tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;
+  background:color-mix(in srgb,var(--a) 15%,transparent);color:var(--a);border:1px solid color-mix(in srgb,var(--a) 26%,transparent)}
+.tag.g{background:color-mix(in srgb,var(--b) 15%,transparent);color:var(--b);border-color:color-mix(in srgb,var(--b) 26%,transparent)}
+.tag.p{background:color-mix(in srgb,var(--e) 15%,transparent);color:var(--e);border-color:color-mix(in srgb,var(--e) 26%,transparent)}
+.meter{height:9px;border-radius:5px;background:var(--line);overflow:hidden;margin:9px 0 6px;position:relative}
+.meter i{display:block;height:100%;border-radius:5px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.alerts{display:flex;flex-direction:column;gap:9px}
+.alert{display:flex;gap:11px;padding:11px 13px;border-radius:11px;background:var(--card2);
+  border:1px solid var(--line);border-left:3px solid var(--warn)}
+.alert.err{border-left-color:var(--err)}
+.alert.ok{border-left-color:var(--ok)}
+.alert .ttl{font-weight:600;font-size:12.5px}
+.alert .msg{color:var(--tx2);font-size:12px;margin-top:2px}
+.empty{color:var(--tx3);font-size:12.5px;padding:14px 0}
+footer{margin-top:34px;color:var(--tx3);font-size:11.5px;display:flex;gap:16px;flex-wrap:wrap;
+  border-top:1px solid var(--line);padding-top:16px}
+code{background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">OC</div>
+      <div>
+        <h1>OpenCode Usage Monitor</h1>
+        <div class="sub" id="stamp">loading…</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <span class="pill"><span class="dot" id="dot"></span><span id="age">—</span></span>
+      <button class="btn" onclick="location.reload()">Refresh</button>
+      <button class="btn" id="theme">Light</button>
+    </div>
+  </header>
+
+  <div class="alerts" id="alerts"></div>
+
+  <section>
+    <div class="grid2">
+      <div class="panel" style="border-color:color-mix(in srgb,var(--a) 34%,var(--line))">
+        <h3>Free-tier quota <span class="tag" style="margin-left:6px">Zen · provider=opencode</span></h3>
+        <div class="hint">依 <code>ipRateLimiter.ts</code> 推估 · 基底 <b id="baseTxt">—</b> ×2 = <span id="capTxt">—</span> ·
+          計數依 <b>IP</b>，UTC 日 <b id="utcTxt">—</b> 重置（台灣 08:00）· 官方無查詢 API</div>
+        <div class="chart" style="height:190px"><canvas id="c2"></canvas></div>
+        <div id="quotaBox" style="padding:2px 0 12px"></div>
+      </div>
+      <div class="panel">
+        <h3>Requests per hour</h3>
+        <div class="hint">assistant turns, last 24 hours · 每日上限 <span id="capTxt2">—</span> 次</div>
+        <div class="chart" style="height:190px"><canvas id="c1"></canvas></div>
+        <div id="winBox" style="padding:2px 0 10px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Overview</h2>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Maintenance</h3>
+        <div class="hint">清理本機暫存 · 透過 <code>ocusage://</code> 協定在本機執行，不需常駐伺服器</div>
+        <div id="cleanBox"></div>
+      </div>
+      <div class="panel">
+        <h3>Database composition</h3>
+        <div class="hint">依 <code>session</code> / <code>message</code> / <code>part</code> 推估 · event 表約佔 82%</div>
+        <table id="tDb"></table>
+        <div style="font-size:11.5px;color:var(--tx3);padding:10px 0 12px;line-height:1.6">
+          <code>freelist_count = 0</code> → 無空洞，<b style="color:var(--tx2)">VACUUM 本身無效</b>；
+          唯一能真正縮小資料庫的方式是刪除舊 session。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid3">
+      <div class="panel">
+        <h3>Token composition</h3>
+        <div class="hint">all sessions, cumulative</div>
+        <div class="chart"><canvas id="c3"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>Model distribution</h3>
+        <div class="hint">by total tokens</div>
+        <div class="chart"><canvas id="c4"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>Local footprint</h3>
+        <div class="hint">disk usage under <code>~/.local/share/opencode</code></div>
+        <div class="chart"><canvas id="c5"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Models</h3>
+        <div class="hint">sessions and token usage by provider/model</div>
+        <table id="tModel"></table>
+      </div>
+      <div class="panel">
+        <h3>Provider credits</h3>
+        <div class="hint">unreachable providers degrade silently to “unknown”</div>
+        <table id="tCredit"></table>
+        <div id="quotaBox2" style="padding:10px 0 12px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Recent sessions</h3>
+        <div class="hint">last 12 updated sessions</div>
+        <table id="tSess"></table>
+      </div>
+      <div class="panel">
+        <h3>Storage &amp; processes</h3>
+        <div class="hint">collected every 10 minutes</div>
+        <table id="tDisk"></table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>refresh every 10 min (meta refresh 600s)</span>
+    <span id="collect"></span>
+    <span>read-only collector · <code>collect.py</code> · no OpenCode config is modified</span>
+  </footer>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+
+const fmt = n => n==null ? '—' : n.toLocaleString('en-US');
+const mb = n => n>=1024 ? (n/1024).toFixed(2)+' GB' : n.toFixed(0)+' MB';
+const esc = s => String(s??'—').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+
+const cs = getComputedStyle(document.documentElement);
+const C = n => cs.getPropertyValue(n).trim();
+const PAL = () => [C('--a'),C('--b'),C('--c'),C('--d'),C('--e'),C('--ok'),C('--err')];
+
+Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+Chart.defaults.font.size = 11.5;
+Chart.defaults.color = C('--tx3');
+Chart.defaults.borderColor = C('--line');
+
+const charts = [];
+function mk(id, cfg){
+  const el = document.getElementById(id);
+  if(!el) return;
+  charts.push(new Chart(el, cfg));
+}
+
+/* header */
+document.getElementById('stamp').textContent =
+  `${D.host} · generated ${D.generated_at} · interval ${D.interval_min} min`;
+const idle = D.sessions.idle_min;
+document.getElementById('age').textContent = idle==null ? 'no data'
+  : idle < 1 ? 'active now' : `idle ${idle<60? Math.round(idle)+' min' : (idle/60).toFixed(1)+' h'}`;
+document.getElementById('dot').className = 'dot' + (idle!=null && idle>60 ? ' stale' : '');
+document.getElementById('collect').textContent = `collector ${D.collect_ms} ms`;
+
+/* theme */
+const stored = localStorage.getItem('oc-theme');
+if(stored) document.documentElement.dataset.theme = stored;
+const syncBtn = ()=> document.getElementById('theme').textContent =
+  document.documentElement.dataset.theme==='dark' ? 'Light' : 'Dark';
+syncBtn();
+document.getElementById('theme').onclick = ()=>{
+  document.documentElement.dataset.theme =
+    document.documentElement.dataset.theme==='dark' ? 'light' : 'dark';
+  localStorage.setItem('oc-theme', document.documentElement.dataset.theme);
+  syncBtn(); charts.forEach(c=>{ c.destroy(); }); render();
+};
+
+/* alerts */
+const al = document.getElementById('alerts');
+if(D.alerts.length){
+  al.innerHTML = D.alerts.map(a=>
+    `<div class="alert ${(a.level==='warn'||a.level==='crit')?'err':''}">
+       <div><div class="ttl">${esc(a.title)}</div><div class="msg">${esc(a.detail)}</div></div>
+     </div>`).join('');
+}else{
+  al.innerHTML = `<div class="alert ok"><div><div class="ttl">All clear</div>
+    <div class="msg">No threshold breached · db ${mb(D.disk['opencode.db'].mb)} ·
+    ${D.quota.blocked_events} rate-limit events · idle ${idle==null?'—':Math.round(idle)+' min'}</div></div></div>`;
+}
+
+/* KPIs */
+const t = D.sessions.tokens, q = D.quota, P = D.processes;
+const cards = [
+  {k:'--a', l:'Total tokens', v:fmt(t.total), s:`<b>${fmt(t.input)}</b> in · <b>${fmt(t.output)}</b> out`},
+  {k:'--b', l:'Requests', v:fmt(D.requests.requests), s:`<b>${fmt(q.requests_today)}</b> today · ${fmt(D.sessions.last24h.sessions)} sessions / 24h`},
+  {k:'--e', l:'Cache read', v:fmt(t.cache_read), s:`hit rate <b>${(t.cache_hit_rate*100).toFixed(1)}%</b> · write ${fmt(t.cache_write)}`},
+  {k:'--c', l:'Sessions', v:fmt(D.sessions.count), s:`${D.sessions.by_model.length} models · ${D.sessions.by_project.length} projects`},
+  {k:'--d', l:'Store footprint', v:mb(D.disk._total_mb), s:`db <b>${mb(D.disk['opencode.db'].mb)}</b> · log ${mb(D.disk.log.mb)}`},
+  {k:'--a', l:'App memory', v:P.rss_mb.toFixed(0)+'<span class="k-unit">MB</span>', s:`<b>${P.count}</b> OpenCode processes · ${P.cpu_s.toFixed(0)}s cpu`},
+  {k:'--b', l:'Quota used', v:(q.used_pct??0)+'<span class="k-unit">%</span>', s:`<b>${q.requests_today}</b> / ${q.free_daily_cap} Zen · <b>${q.remaining_est}</b> left`},
+  {k:'--b', l:'Rolling 5h window', v:fmt(q.window_5h), s:`1h <b>${q.window_1h}</b> · 24h <b>${q.window_24h}</b> · IP lifetime <b>${fmt(q.lifetime)}</b>`},
+  {k:'--e', l:'Cost', v:'$'+D.sessions.cost.toFixed(2), s:`billed <b>$${D.sessions.cost.toFixed(4)}</b> · est $${D.sessions.cost_est.toFixed(4)}`},
+];
+document.getElementById('kpis').innerHTML = cards.map(c=>
+  `<div class="card" style="--k:var(${c.k})">
+     <div class="k-label">${c.l}</div>
+     <div class="k-val">${c.v}</div>
+     <div class="k-sub">${c.s}</div>
+   </div>`).join('');
+
+/* quota meter */
+const pct = Math.min(q.used_pct??0, 100);
+const col = pct>=q.crit_pct ? 'var(--err)' : pct>=q.warn_pct ? 'var(--warn)' : 'var(--ok)';
+const meter = `<div class="meter" style="height:11px"><i style="width:${pct}%;background:${col}"></i>
+    <b style="position:absolute;left:${q.warn_pct}%;top:-2px;bottom:-2px;width:1px;background:var(--warn);opacity:.8"></b></div>
+  <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--tx2)">
+    <span><b style="color:var(--tx)">${q.requests_today}</b> 次已用（Zen，UTC 日起算）</span>
+    <span><b style="color:var(--tx)">${q.remaining_est}</b> 次剩餘 / 共 ${q.free_daily_cap}</span></div>
+  <div style="font-size:11.5px;color:var(--tx3);margin-top:8px;line-height:1.65">
+    警示線 <span style="color:var(--warn)">│ ${q.warn_pct}%（${Math.round(q.free_daily_cap*q.warn_pct/100)} 次）</span> ·
+    嚴重 <span style="color:var(--err)">${q.crit_pct}%（${Math.round(q.free_daily_cap*q.crit_pct/100)} 次）</span><br>
+    ${q.blocked_events ? `<span style="color:var(--err)">⚠ 24 小時內 ${q.blocked_events} 次 429 FreeUsageLimitError</span>`
+      : '✓ 24 小時內無 429，額度未被實際觸及'}<br>
+    上限推估：<code>${esc(q.tier_note)}</code>
+  </div>`;
+document.getElementById('quotaBox').innerHTML = meter;
+document.getElementById('quotaBox2').innerHTML = meter;
+document.getElementById('capTxt').textContent = q.free_daily_cap;
+document.getElementById('capTxt2').textContent = q.free_daily_cap;
+document.getElementById('baseTxt').textContent = q.free_daily_base;
+document.getElementById('utcTxt').textContent = (q.utc_day_start||'').slice(11,16);
+
+/* rolling window cards (under the hourly chart) */
+document.getElementById('winBox').innerHTML =
+  `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    ${[['1 hour',q.window_1h],['5 hours',q.window_5h],['24 hours',q.window_24h],
+       ['IP lifetime',q.lifetime]].map(([l,v])=>
+      `<div style="background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:7px 9px">
+         <div style="font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em">${l}</div>
+         <div style="font-size:17px;font-weight:640;font-variant-numeric:tabular-nums">${typeof v==='number'?v.toLocaleString('en-US'):v}</div>
+       </div>`).join('')}
+  </div>
+  <div style="font-size:11px;color:var(--tx3);margin-top:7px;line-height:1.5">
+    滾動 5h 視窗自 ${esc(q.window_5h_start?.slice(11,16) ?? '—')} 起算 · 全部為 provider=opencode<br>
+    今日用量分布：${(q.models_today||[]).map(m=>`${esc(m.model)} <b>${m.requests}</b> (${m.share_pct}%)`).join(' · ') || '—'}
+  </div>`;
+
+/* maintenance */
+const dbTotal = D.disk['opencode.db'].mb;
+const dbRows = [
+  ['event', 172529, 13.8, 82],
+  ['part',   29626, 10.8, 11],
+  ['message', 7119,  2.9, 1],
+  ['index / pages / other', null, null, 6],
+];
+document.getElementById('tDb').innerHTML =
+  `<thead><tr><th>Table</th><th class="num">Rows</th><th class="num">MB</th><th style="width:80px">Share</th></tr></thead><tbody>` +
+  dbRows.map(([n,r,mb,pc])=>`<tr><td class="name">${n}</td>
+    <td class="num">${r? r.toLocaleString('en-US') : '—'}</td>
+    <td class="num">${mb ? (dbTotal*pc/100).toFixed(0) : (dbTotal*pc/100).toFixed(0)}</td>
+    <td><div class="bar"><i style="width:${pc}%;background:${pc>50?'linear-gradient(90deg,var(--c),var(--err))':'var(--a)'}"></i></div></td></tr>`).join('')
+  + '</tbody>';
+
+document.getElementById('cleanBox').innerHTML = `
+  <div style="display:flex;flex-direction:column;gap:9px;padding-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;
+                background:var(--card2);border:1px solid var(--line)">
+      <div style="flex:1">
+        <div style="font-size:12.5px;font-weight:600">安全清理</div>
+        <div style="font-size:11.5px;color:var(--tx3)">輪替 log、刪除過期 tool-output、WAL checkpoint、修剪 history</div>
+      </div>
+      <a class="btn" style="text-decoration:none" href="ocusage://safe">執行</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;
+                background:var(--card2);border:1px solid var(--line)">
+      <div style="flex:1">
+        <div style="font-size:12.5px;font-weight:600">僅 WAL checkpoint</div>
+        <div style="font-size:11.5px;color:var(--tx3)">只回收 -wal 暫存，零資料風險</div>
+      </div>
+      <a class="btn" style="text-decoration:none" href="ocusage://db">執行</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;
+                background:color-mix(in srgb,var(--err) 8%,var(--card2));
+                border:1px solid color-mix(in srgb,var(--err) 28%,var(--line))">
+      <div style="flex:1">
+        <div style="font-size:12.5px;font-weight:600;color:var(--err)">封存舊 session（需手動確認）</div>
+        <div style="font-size:11.5px;color:var(--tx3)">唯一能真正縮小 2.9 GB 資料庫的方法，會永久刪除對話紀錄</div>
+      </div>
+      <button class="btn" onclick="purgeHelp()">說明</button>
+    </div>
+    <div style="font-size:11px;color:var(--tx3);line-height:1.6">
+      結果寫入 <code>~/.local/share/opencode-usage/cleanup.log</code>。按鈕經由 <code>ocusage://</code> 啟動本機 Python，
+      瀏覽器會詢問是否開啟外部應用程式。
+    </div>
+  </div>`;
+
+function purgeHelp(){
+  const cmd = 'python "$env:USERPROFILE\\\\.config\\\\opencode\\\\skills\\\\opencode-usage\\\\cleanup.py" purge --days 30 --apply --yes PURGE --backup "$env:USERPROFILE\\\\opencode-backup.db"';
+  alert(
+    '此操作無法復原，必須在終端機手動執行（按鈕刻意不提供自動執行）：\\n\\n' + cmd +
+    '\\n\\n先跑 cleanup.py survey 預覽可回收空間；建議務必加上 --backup。'
+  );
+  navigator.clipboard?.writeText(cmd.replace(/\\\\\\\\/g,'\\\\'));
+}
+
+/* tables */
+const maxTok = Math.max(...D.sessions.by_model.map(m=>m.input+m.output+m.cache_read), 1);
+document.getElementById('tModel').innerHTML =
+ `<thead><tr><th>Model</th><th class="num">Sess</th><th class="num">Input</th>
+   <th class="num">Output</th><th class="num">Cache</th><th style="width:70px">Share</th></tr></thead>
+  <tbody>${D.sessions.by_model.map(m=>{
+    const tot=m.input+m.output+m.cache_read;
+    const cls = m.cost_est>0 ? 'p' : 'g';
+    return `<tr><td class="name"><span class="tag ${cls}">${esc(m.provider)}</span> ${esc(m.model)}</td>
+      <td class="num">${m.sessions}</td><td class="num">${fmt(m.input)}</td>
+      <td class="num">${fmt(m.output)}</td><td class="num">${fmt(m.cache_read)}</td>
+      <td><div class="bar"><i style="width:${(tot/maxTok*100).toFixed(1)}%"></i></div></td></tr>`;
+  }).join('')}</tbody>`;
+
+const cr = D.credits||{};
+document.getElementById('tCredit').innerHTML =
+ `<thead><tr><th>Provider</th><th>Remaining</th><th>Status</th></tr></thead><tbody>` +
+ Object.entries(cr).map(([k,v])=>{
+   const known = v.ok && v.remaining!=null;
+   return `<tr><td class="name">${esc(k)}</td>
+     <td class="num">${known ? (k==='openrouter' ? '$'+v.remaining.toFixed(2) : v.remaining) : '<span style="color:var(--tx3)">unknown</span>'}</td>
+     <td>${known ? '<span class="tag g">ok</span>'
+       : `<span class="tag" style="color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent);border-color:color-mix(in srgb,var(--warn) 26%,transparent)">degraded</span>`}</td></tr>`;
+ }).join('') + '</tbody>';
+
+document.getElementById('tSess').innerHTML =
+ `<thead><tr><th>Session</th><th>Model</th><th class="num">Age</th></tr></thead><tbody>` +
+ D.sessions.recent.map(s=>`<tr><td class="name" title="${esc(s.title)}">${esc(s.title.slice(0,44))}</td>
+   <td>${esc(s.provider)}/${esc(s.model)}</td>
+   <td class="num" style="color:${s.age_min<15?'var(--ok)':'var(--tx2)'}">${s.age_min<60?Math.round(s.age_min)+'m':(s.age_min/60).toFixed(1)+'h'}</td></tr>`).join('')
+ + '</tbody>';
+
+const d = D.disk, dmax = Math.max(...Object.entries(d).filter(([k])=>!k.startsWith('_')).map(([,v])=>v.mb),1);
+document.getElementById('tDisk').innerHTML =
+ `<thead><tr><th>Store</th><th class="num">Size</th><th class="num">Files</th></tr></thead><tbody>` +
+ Object.entries(d).filter(([k])=>!k.startsWith('_')).sort((a,b)=>b[1].mb-a[1].mb).map(([k,v])=>
+  `<tr><td class="name">${esc(k)}</td><td class="num">${mb(v.mb)}</td><td class="num">${fmt(v.files)}</td></tr>`).join('')
+ + `<tr><td class="name">OpenCode processes</td><td class="num">${P.rss_mb.toFixed(0)} MB</td>
+    <td class="num">${P.count}</td></tr></tbody>`;
+
+/* charts */
+const TT = {backgroundColor:C('--card'),borderColor:C('--line'),borderWidth:1,titleColor:C('--tx'),
+  bodyColor:C('--tx2'),padding:10,cornerRadius:8,displayColors:true,boxPadding:4};
+
+function render(){
+  const p = PAL();
+  mk('c1',{type:'bar',data:{labels:D.requests.hourly.map(h=>h.hour.slice(5)),
+    datasets:[{label:'requests',data:D.requests.hourly.map(h=>h.requests),
+      backgroundColor:ctx=>{const c=ctx.chart.ctx.createLinearGradient(0,0,0,240);
+        c.addColorStop(0,p[0]);c.addColorStop(1,'transparent');return c;},
+      borderRadius:5,borderSkipped:false,maxBarThickness:26}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:TT},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:14}},
+              y:{beginAtZero:true,grid:{color:C('--line')},ticks:{precision:0}}}}});
+
+  mk('c2',{type:'doughnut',data:{labels:['Used today','Remaining'],
+    datasets:[{data:[q.requests_today,q.remaining_est],
+      backgroundColor:[col,'color-mix(in srgb,var(--line) 100%,transparent)'],
+      borderColor:C('--card'),borderWidth:2,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'70%',
+      plugins:{legend:{position:'bottom'},tooltip:{...TT,callbacks:{
+        label:c=>` ${c.label}: ${c.raw} requests`}}}}});
+
+  mk('c3',{type:'doughnut',data:{
+    labels:['Input','Output','Reasoning','Cache read','Cache write'],
+    datasets:[{data:[t.input,t.output,t.reasoning,t.cache_read,t.cache_write],
+      backgroundColor:p,borderWidth:0,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:'circle',padding:11}},
+        tooltip:{...TT,callbacks:{label:c=>` ${c.label}: ${fmt(c.raw)}`}}}}});
+
+  const bm = D.sessions.by_model.slice(0,8);
+  mk('c4',{type:'bar',data:{labels:bm.map(m=>m.model),
+    datasets:[{data:bm.map(m=>m.input+m.output+m.cache_read),
+      backgroundColor:p.slice(0,8),borderRadius:5,borderSkipped:false,maxBarThickness:18}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{...TT,callbacks:{
+        label:c=>` ${fmt(c.raw)} tokens`}}},
+      scales:{x:{grid:{color:C('--line')},ticks:{callback:v=>v>=1e6?(v/1e6).toFixed(0)+'M':v>=1e3?(v/1e3).toFixed(0)+'k':v}},
+              y:{grid:{display:false}}}}});
+
+  const de = Object.entries(D.disk).filter(([k])=>!k.startsWith('_')).sort((a,b)=>b[1].mb-a[1].mb);
+  mk('c5',{type:'doughnut',data:{labels:de.map(x=>x[0]),
+    datasets:[{data:de.map(x=>x[1].mb),backgroundColor:p,borderWidth:0,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{legend:{position:'bottom',labels:{boxWidth:9,boxHeight:9,usePointStyle:true,pointStyle:'circle',padding:9}},
+        tooltip:{...TT,callbacks:{label:c=>` ${c.label}: ${mb(c.raw)}`}}}}});
+}
+render();
+</script>
+</body>
+</html>

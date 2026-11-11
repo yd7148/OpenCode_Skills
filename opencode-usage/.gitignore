@@ -1,0 +1,7 @@
+# never commit local secrets or generated output
+telegram.enc
+*.enc
+dashboard-latest.html
+__pycache__/
+*.pyc
+cleanup.log

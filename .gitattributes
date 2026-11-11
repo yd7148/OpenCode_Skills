@@ -1,0 +1,14 @@
+# 注意：*.ps1 必須保留 UTF-8 BOM。
+# Windows PowerShell 5.1 讀取「無 BOM 的 UTF-8 .ps1」時會當成 ANSI (cp950/Big5)，
+# 造成中文註解與字串被解碼成亂碼，進而讓 parser 報
+# "The string is missing the terminator" 之類的語法錯誤，整支腳本無法執行。
+# 這是踩過的坑，修改任何 .ps1 後務必確認前三個位元組為 EF BB BF。
+*.ps1 text eol=crlf
+
+# Python、Shell 與 Markdown 保持 LF
+*.py text eol=lf
+*.sh text eol=lf
+*.md text eol=lf
+
+# Node ESM 腳本（.mjs）保持 LF，避免 core.autocrlf 造成整檔 CRLF 雜訊
+*.mjs text eol=lf
