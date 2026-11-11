@@ -138,7 +138,34 @@ with an id and an effect or setup function)])"
 > **若直接貼上游 SKILL.md**，agent 會被教導使用本機不存在的旗標，指令會直接報錯，
 > 且 skill 的「功能可用性」判斷全部失準。故本輪採**上游 main 為內容基準 + 逐項標註相容性**。
 
-### 2.6 額外發現（既有問題，非本輪變更造成）
+### 2.6 MCP `skill` 工具讀的是 npm 套件內附版，不是本機 skill 檔
+
+同步後對照兩個來源，發現 MCP 工具與本機 skill 檔是**兩份不同的內容**：
+
+| 來源 | 大小 | 含〈本機版本相容性〉表 |
+|------|------|---------------------|
+| `~/.config/opencode/skills/browser-control/SKILL.md`（本機，已同步） | 39,150 bytes | ✅ 有 |
+| npm 套件 `skills/browser-control/SKILL.md`（MCP `skill` 工具讀這份） | 32,855 bytes | ❌ 無 |
+
+原因（讀 `dist/mcp.js` 原始碼確認）：
+
+```js
+var packageRoot = path2.dirname(path2.dirname(fileURLToPath2(import.meta.url)));
+// ...
+fs.readFile(path2.join(packageRoot, "skills", "browser-control", "SKILL.md"), "utf8")
+```
+
+MCP 的 `skill` 工具以**套件安裝目錄**推導路徑，與 `~/.config/opencode/skills/` 無關。
+實測 `browser_control.skill()` 回傳 33,649 bytes，內容為 0.8.4 原始版（無相容性表）。
+
+**影響與處置**：
+- agent 若走「載入 skill 檔」路徑 → 拿到 39,150 bytes 的**含相容性表**版本 ✅
+- agent 若走「呼叫 MCP `skill()` 工具」路徑 → 拿到 32,855 bytes 的**無相容性表**版本 ⚠️
+
+因此相容性標註**必須**以 skill 檔為準，MCP `skill()` 僅作為上游原始文件參考。
+本 repo 的 `browser-control/SKILL.md` 是唯一真實來源（本機同步自此處），已含相容性表。
+
+### 2.7 額外發現（既有問題，非本輪變更造成）
 
 `opencode-auto-name` v0.1.3 **自 2026-10-05 起從未在 V2 載入成功**：
 
