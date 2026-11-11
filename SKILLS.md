@@ -1,6 +1,6 @@
 # OpenCode Skills 說明文件
 
-本收藏庫目前收錄 **39 個 skills**。每個 skill 都是一個資料夾，內含 `SKILL.md`
+本收藏庫目前收錄 **41 個 skills**。每個 skill 都是一個資料夾，內含 `SKILL.md`
 （YAML frontmatter 的 `name` + `description` 決定觸發時機）與選用的 `references/`、`scripts/`。
 
 > **同步**：本機 `~/.config/opencode/skills/` ↔ 本 repo，由 `github-skill-sync` skill 負責。
@@ -62,24 +62,26 @@
 | 19 | [`yt-batch-download`](#19-yt-batch-download) | 批次下載 YouTube 影片（1080p 最高畫質），支援自訂檔名、cookies 匯入、SSL 修復、JS runtime 設定。Use when asked to "下載YouTube影片", "批次下載YT",… |
 | 20 | [`yt-upload`](#20-yt-upload) | 透過 Playwright 操作 YouTube Studio，將本機影片上傳並公開發布為 YouTube 影片。支援填寫詳細的標題、說明、標籤、主題標籤，設定目標觀眾（非兒童專屬）、瀏覽權限（公開/不公開/私人），並… |
 | 21 | [`browser-control`](#21-browser-control) | Drive the user's existing Chromium-family browser with deterministic Playwright. |
-| 22 | [`open-computer-use`](#22-open-computer-use) | Platform-neutral guidance for using Open Computer Use, the open-source Computer Use MCP server and CLI for ma… |
-| 23 | [`opencode-browser`](#23-opencode-browser) | 用 OpenCode 外掛 `@different-ai/opencode-browser`（OpenCode Browser）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿用同一個 prof… |
-| 24 | [`web-tools`](#24-web-tools) | Use when the user needs to fetch web pages or automate a browser. |
-| 25 | [`cv-job-application`](#25-cv-job-application) | Use when 投遞或填寫 中華電信/台積電 線上履歷、要操作 rmis.cht.com.tw 報名表（自動填表、附件上傳、狀態檢核）、要沿用已保存的 Chrome 登入資訊（.pw-profile）登入、需要把台積… |
-| 26 | [`micron-job-search`](#26-micron-job-search) | Use when the user wants to search, filter, categorize, or analyze Micron Technology job openings (careers.mic… |
-| 27 | [`resume-cloudflare-maintenance`](#27-resume-cloudflare-maintenance) | 維護劉士禎的 Resume 01 個人履歷網站與 Cloudflare Workers 靜態部署；用於本專案更新中英內容、保留舊版、建立發布副本、調整 workers.dev 網址或還原。不是通用網站建置 Skill。 |
-| 28 | [`taobao-cost`](#28-taobao-cost) | Use when the user works with 淘obao (Taobao) exported order data or 淘寶費用計算明細 spreadsheets. |
-| 29 | [`yd7148-portfolio-deploy`](#29-yd7148-portfolio-deploy) | Use when 維護／部署／改網址／改路由／處理個資 for 劉士禎的三個個人網站（Astro 7 + Tailwind v4 + GitHub Pages + Actions 自動部署）—— repo `cv1`（… |
-| 30 | [`astro-dev`](#30-astro-dev) | \|- Build and debug Astro sites: content collections, islands architecture, rendering modes, and image/SEO bas… |
-| 31 | [`cloudflare-platform`](#31-cloudflare-platform) | Use when building or deploying on Cloudflare's core platform — Workers, Pages, KV, R2, D1, AI, or networking… |
-| 32 | [`github-skill-sync`](#32-github-skill-sync) | 同步本機 OpenCode skills（`~/.config/opencode/skills/`）與 GitHub 上的 `yd7148/OpenCode_skill` 收藏庫。本 skill 同時管理**下載（Gi… |
-| 33 | [`mac-disk-cleanup`](#33-mac-disk-cleanup) | 掃描與清理 macOS 磁碟空間：定位大目錄（家目錄、Applications、/Library/Application Support、CloudStorage、/private/var）、辨識可安全刪除的快取與孤兒… |
-| 34 | [`network-port-check`](#34-network-port-check) | 檢查本機對外網路連線狀態（Windows PowerShell 與 macOS bash 雙版本）：哪些 TCP port 通、哪些被防火牆擋、遠端服務（RDP/SSH/VNC）能否接通、有哪些網站被擋、TLS 是否被… |
-| 35 | [`opencode-session-auto-name`](#35-opencode-session-auto-name) | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零… |
-| 36 | [`opencode-usage`](#36-opencode-usage) | Monitor and report OpenCode usage, quota, and local resource consumption. |
-| 37 | [`py-binary-deps`](#37-py-binary-deps) | Use when a CLI tool or native binary must be installed on this machine — ffmpeg, yt-dlp, ffprobe, node, uv, r… |
-| 38 | [`comfyui-qwen-image-edit`](#38-comfyui-qwen-image-edit) | 用 ComfyUI + Qwen-Image-2.1 做圖像編輯（改圖／換裝／服裝轉移／多圖參考）與文生圖，產出可直接拖入 ComfyUI 的工作流 JSON，並用 /prompt API 批次執行。涵蓋兩個會「不報錯… |
-| 39 | [`mate-engine`](#39-mate-engine) | Mate Engine / Mate Engine X（免費輕量桌面寵物、Desktop Mate 替代品）的下載、安裝執行，以及動作數量擴充（把 Assembly-CSharp.dll 的 totalIdleAnim… |
+| 22 | [`browser-site-guides`](#22-browser-site-guides) | Use when asked to "操作 gmail、linkedin、amazon、tiktok、xiaohongshu、bbc-news、google-maps 等特定網站"、或需要該網站的反爬／驗證／流程細節、… |
+| 23 | [`browser-stack-routing`](#23-browser-stack-routing) | 決定本機五套瀏覽器／桌面自動化該用哪一套（browser-control、opencode-browser、browser-skill/bsk、chrome-devtools、open-computer-use），並強… |
+| 24 | [`open-computer-use`](#24-open-computer-use) | Platform-neutral guidance for using Open Computer Use, the open-source Computer Use MCP server and CLI for ma… |
+| 25 | [`opencode-browser`](#25-opencode-browser) | 用 OpenCode 外掛 `@different-ai/opencode-browser`（native messaging + broker）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿… |
+| 26 | [`web-tools`](#26-web-tools) | Use when the user needs to fetch web pages or automate a browser. |
+| 27 | [`cv-job-application`](#27-cv-job-application) | Use when 投遞或填寫 中華電信/台積電 線上履歷、要操作 rmis.cht.com.tw 報名表（自動填表、附件上傳、狀態檢核）、要沿用已保存的 Chrome 登入資訊（.pw-profile）登入、需要把台積… |
+| 28 | [`micron-job-search`](#28-micron-job-search) | Use when the user wants to search, filter, categorize, or analyze Micron Technology job openings (careers.mic… |
+| 29 | [`resume-cloudflare-maintenance`](#29-resume-cloudflare-maintenance) | 維護劉士禎的 Resume 01 個人履歷網站與 Cloudflare Workers 靜態部署；用於本專案更新中英內容、保留舊版、建立發布副本、調整 workers.dev 網址或還原。不是通用網站建置 Skill。 |
+| 30 | [`taobao-cost`](#30-taobao-cost) | Use when the user works with 淘obao (Taobao) exported order data or 淘寶費用計算明細 spreadsheets. |
+| 31 | [`yd7148-portfolio-deploy`](#31-yd7148-portfolio-deploy) | Use when 維護／部署／改網址／改路由／處理個資 for 劉士禎的三個個人網站（Astro 7 + Tailwind v4 + GitHub Pages + Actions 自動部署）—— repo `cv1`（… |
+| 32 | [`astro-dev`](#32-astro-dev) | \|- Build and debug Astro sites: content collections, islands architecture, rendering modes, and image/SEO bas… |
+| 33 | [`cloudflare-platform`](#33-cloudflare-platform) | Use when building or deploying on Cloudflare's core platform — Workers, Pages, KV, R2, D1, AI, or networking… |
+| 34 | [`github-skill-sync`](#34-github-skill-sync) | 同步本機 OpenCode skills（`~/.config/opencode/skills/`）與 GitHub 上的 `yd7148/OpenCode_skill` 收藏庫。本 skill 同時管理**下載（Gi… |
+| 35 | [`mac-disk-cleanup`](#35-mac-disk-cleanup) | 掃描與清理 macOS 磁碟空間：定位大目錄（家目錄、Applications、/Library/Application Support、CloudStorage、/private/var）、辨識可安全刪除的快取與孤兒… |
+| 36 | [`network-port-check`](#36-network-port-check) | 檢查本機對外網路連線狀態（Windows PowerShell 與 macOS bash 雙版本）：哪些 TCP port 通、哪些被防火牆擋、遠端服務（RDP/SSH/VNC）能否接通、有哪些網站被擋、TLS 是否被… |
+| 37 | [`opencode-session-auto-name`](#37-opencode-session-auto-name) | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零… |
+| 38 | [`opencode-usage`](#38-opencode-usage) | Monitor and report OpenCode usage, quota, and local resource consumption. |
+| 39 | [`py-binary-deps`](#39-py-binary-deps) | Use when a CLI tool or native binary must be installed on this machine — ffmpeg, yt-dlp, ffprobe, node, uv, r… |
+| 40 | [`comfyui-qwen-image-edit`](#40-comfyui-qwen-image-edit) | 用 ComfyUI + Qwen-Image-2.1 做圖像編輯（改圖／換裝／服裝轉移／多圖參考）與文生圖，產出可直接拖入 ComfyUI 的工作流 JSON，並用 /prompt API 批次執行。涵蓋兩個會「不報錯… |
+| 41 | [`mate-engine`](#41-mate-engine) | Mate Engine / Mate Engine X（免費輕量桌面寵物、Desktop Mate 替代品）的下載、安裝執行，以及動作數量擴充（把 Assembly-CSharp.dll 的 totalIdleAnim… |
 
 ## Skill 詳細說明
 
@@ -331,7 +333,21 @@ acknowledgment as proof that the task succeeded.
 
 ---
 
-## 22. open-computer-use
+## 22. browser-site-guides
+詳見 [browser-site-guides/SKILL.md](browser-site-guides/SKILL.md)。
+
+Use when asked to "操作 gmail、linkedin、amazon、tiktok、xiaohongshu、bbc-news、google-maps 等特定網站"、或需要該網站的反爬／驗證／流程細節、…
+
+---
+
+## 23. browser-stack-routing
+詳見 [browser-stack-routing/SKILL.md](browser-stack-routing/SKILL.md)。
+
+決定本機五套瀏覽器／桌面自動化該用哪一套（browser-control、opencode-browser、browser-skill/bsk、chrome-devtools、open-computer-use），並強…
+
+---
+
+## 24. open-computer-use
 [open-computer-use/SKILL.md](open-computer-use/SKILL.md)
 
 # Open Computer Use
@@ -342,7 +358,7 @@ Open Computer Use exposes Computer Use as a local CLI and stdio MCP server. It i
 
 ---
 
-## 23. opencode-browser
+## 25. opencode-browser
 [opencode-browser/SKILL.md](opencode-browser/SKILL.md)
 
 # OpenCode Browser
@@ -359,7 +375,7 @@ Open Computer Use exposes Computer Use as a local CLI and stdio MCP server. It i
 
 ---
 
-## 24. web-tools
+## 26. web-tools
 [web-tools/SKILL.md](web-tools/SKILL.md)
 
 # web-tools — 本機網頁工具環境
@@ -383,7 +399,7 @@ Open Computer Use exposes Computer Use as a local CLI and stdio MCP server. It i
 
 ---
 
-## 25. cv-job-application
+## 27. cv-job-application
 [cv-job-application/SKILL.md](cv-job-application/SKILL.md)
 
 # cv-job-application — 履歷投遞（中華電信 / 台積電）
@@ -395,7 +411,7 @@ Open Computer Use exposes Computer Use as a local CLI and stdio MCP server. It i
 
 ---
 
-## 26. micron-job-search
+## 28. micron-job-search
 [micron-job-search/SKILL.md](micron-job-search/SKILL.md)
 
 # Micron Job Search — 台中職缺抓取與分析
@@ -406,7 +422,7 @@ Micron 職缺查詢、分類、条件解析、履歷格式研究與報告產出�
 
 ---
 
-## 27. resume-cloudflare-maintenance
+## 29. resume-cloudflare-maintenance
 [resume-cloudflare-maintenance/SKILL.md](resume-cloudflare-maintenance/SKILL.md)
 
 # Resume 01 maintenance
@@ -418,7 +434,7 @@ Current Windows project root:
 
 ---
 
-## 28. taobao-cost
+## 30. taobao-cost
 [taobao-cost/SKILL.md](taobao-cost/SKILL.md)
 
 # taobao-cost-fill — 淘寶費用計算明細填寫
@@ -441,7 +457,7 @@ Current Windows project root:
 
 ---
 
-## 29. yd7148-portfolio-deploy
+## 31. yd7148-portfolio-deploy
 [yd7148-portfolio-deploy/SKILL.md](yd7148-portfolio-deploy/SKILL.md)
 
 # yd7148 個人網站維運（v1 / v2 / v3）
@@ -454,21 +470,21 @@ Current Windows project root:
 
 ---
 
-## 30. astro-dev
+## 32. astro-dev
 詳見 [astro-dev/SKILL.md](astro-dev/SKILL.md)。
 
 \|- Build and debug Astro sites: content collections, islands architecture, rendering modes, and image/SEO bas…
 
 ---
 
-## 31. cloudflare-platform
+## 33. cloudflare-platform
 詳見 [cloudflare-platform/SKILL.md](cloudflare-platform/SKILL.md)。
 
 Use when building or deploying on Cloudflare's core platform — Workers, Pages, KV, R2, D1, AI, or networking…
 
 ---
 
-## 32. github-skill-sync
+## 34. github-skill-sync
 [github-skill-sync/SKILL.md](github-skill-sync/SKILL.md)
 
 # github-skill-sync — 本機與 GitHub Skills 同步
@@ -480,14 +496,14 @@ Repo 使用根目錄的 `<skill-name>/SKILL.md`，本機安裝仍使用 `skills/
 
 ---
 
-## 33. mac-disk-cleanup
+## 35. mac-disk-cleanup
 詳見 [mac-disk-cleanup/SKILL.md](mac-disk-cleanup/SKILL.md)。
 
 掃描與清理 macOS 磁碟空間：定位大目錄（家目錄、Applications、/Library/Application Support、CloudStorage、/private/var）、辨識可安全刪除的快取與孤兒…
 
 ---
 
-## 34. network-port-check
+## 36. network-port-check
 [network-port-check/SKILL.md](network-port-check/SKILL.md)
 
 # network-port-check
@@ -546,7 +562,7 @@ un-all.ps1                                              # 一鍵完整檢查
 
 ---
 
-## 35. opencode-session-auto-name
+## 37. opencode-session-auto-name
 [opencode-session-auto-name/SKILL.md](opencode-session-auto-name/SKILL.md)
 
 # opencode-session-auto-name — Session 標題自動命名
@@ -558,7 +574,7 @@ un-all.ps1                                              # 一鍵完整檢查
 
 ---
 
-## 36. opencode-usage
+## 38. opencode-usage
 [opencode-usage/SKILL.md](opencode-usage/SKILL.md)
 
 # OpenCode Usage Monitor
@@ -571,14 +587,14 @@ Read-only observability for the local OpenCode installation. Never writes to
 
 ---
 
-## 37. py-binary-deps
+## 39. py-binary-deps
 詳見 [py-binary-deps/SKILL.md](py-binary-deps/SKILL.md)。
 
 Use when a CLI tool or native binary must be installed on this machine — ffmpeg, yt-dlp, ffprobe, node, uv, r…
 
 ---
 
-## 38. comfyui-qwen-image-edit
+## 40. comfyui-qwen-image-edit
 [comfyui-qwen-image-edit/SKILL.md](comfyui-qwen-image-edit/SKILL.md)
 
 # comfyui-qwen-image-edit — ComfyUI + Qwen-Image-2.1 改圖
@@ -611,7 +627,7 @@ prompt 內以 `<image1>` / `<image2>` 指代參考圖。
 
 ---
 
-## 39. mate-engine
+## 41. mate-engine
 [mate-engine/SKILL.md](mate-engine/SKILL.md)
 
 # Mate Engine — 下載執行 + 動作數量擴充（Idle / Dance）

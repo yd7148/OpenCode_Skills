@@ -6,6 +6,11 @@ description: Drive the user's existing Chromium-family browser with deterministi
 
 # Browser Control
 
+> **選軌與互斥**：本機同時存在五套瀏覽器／桌面自動化工具（browser-control、opencode-browser、
+> browser-skill/bsk、chrome-devtools、open-computer-use）。要用哪一套、以及「**同一分頁同一時間
+> 只能由一套持有**」的硬規則，見 [`browser-stack-routing`](../browser-stack-routing/SKILL.md)。
+> 切換工具前務必先收掉本軌的 session，否則下一個 agent 會誤判分頁已被佔用。
+
 Browser Control is a **driver**, not an agent. The calling agent decides what to
 do; Browser Control runs deterministic Playwright code in the user's visible
 browser.
@@ -751,19 +756,62 @@ include credentials, form values, or private account data.
 Browser Control 延伸模組本身透過 `chrome.debugger` API 運作，**不需要**
 `--remote-debugging-port` 即可控制 Chrome 分頁。但若要讓 **chrome-devtools MCP**
 （或 Playwright MCP 的 `--autoConnect`）直接連上使用者已開啟的 Chrome
-預設 profile，必須以遠端除錯埠啟動 Chrome：
+預設 profile，只能走 **`chrome://inspect/#remote-debugging`**。
+
+> ⚠️ **Chrome 136+ 的重要變更**（2026-11-11 實測確認）：
+> `--remote-debugging-port` / `--remote-debugging-pipe` 對**預設資料目錄一律被忽略**
+> （官方為防止竊密程式從預設 profile 撈 cookie）。
+> 舊做法「關閉所有 Chrome 再以 `--remote-debugging-port=9222` 重啟」**已完全失效**。
+
+### 啟用方式（在使用者既有的 Chrome 內操作，不需重啟瀏覽器）
+
+1. 開啟 `chrome://inspect/#remote-debugging`
+2. 勾選 **「Allow remote debugging for this browser instance」**
+3. Chrome 會在 `127.0.0.1:9222` 啟動遠端除錯伺服器，並寫出
+   `<userDataDir>\DevToolsActivePort`（第 1 行 port、第 2 行 browser websocket 路徑）
+
+該偏好存於 `Local State` 的 `devtools.remote_debugging.user-enabled`，
+**Chrome 重啟後會自動沿用**，不必重新勾選。
+
+### approval 模式：每一條新連線都要核准
+
+該模式下 Chrome 會對**每一條新的 CDP 連線**跳一次「允許遠端偵錯嗎？」對話框，
+必須在連線建立期間按「允許」，連線才會完成；HTTP 探索端點 `/json/version` 會回 `404`。
 
 ```powershell
-# 先關閉所有 Chrome 執行個體，再以遠端除錯埠重新啟動
-"C:\Users\<使用者>\AppData\Local\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+# 核准對話框（UIAutomation InvokePattern，非座標點擊）
+powershell -ExecutionPolicy Bypass -File ../opencode-browser/scripts/approve-remote-debug.ps1 -WaitSeconds 40
 ```
 
-驗證：開啟瀏覽器前往 `http://127.0.0.1:9222/json/version`，應回傳 Chrome 版本 JSON，
-而非連線失敗（`000`）。
+| 症狀 | 原因 | 處置 |
+|---|---|---|
+| `/json/version` 回 `404` | approval 模式下 HTTP 探索端點不開放 | 改用 `DevToolsActivePort` 的 browser websocket 路徑 |
+| WebSocket 握手停滯 | 等待使用者核准 | 跑 `approve-remote-debug.ps1` |
+| 找不到「允許遠端偵錯嗎？」對話框 | UIAutomation `RootElement` 取不到模態對話框 | 用 Win32 `EnumWindows` 列舉（腳本已實作） |
 
-⚠️ Chrome profile 一次只能被一個實例鎖定；`chrome-devtools` 與 `playwright`
-MCP 不可共用同一個 `--user-data-dir`。需多開並行 MCP 客戶端時，
-為各自指定不同 `--user-data-dir` 或加 `--isolated`。
+### ⚠️ Browser Control 擴充功能：請一次性手動安裝（不要用 CDP 載入）
+
+Browser Control 擴充功能是 unpacked，路徑：
+`%APPDATA%\npm\node_modules\@opencode-ai\browser-control\extension\dist`
+
+**用 CDP `Extensions.loadUnpacked` 載入會壞掉**（2026-11-11 實測根因）：
+臨時實例處於半註冊狀態 → `chrome.storage` 未初始化 → service worker 握手拋
+`DOMException: InvalidAccessError` → 無限重連循環 → relay 端留下
+「Another browser or profile is already connected」(4004) 殘留註冊 → 之後所有連線被拒。
+
+**正確做法（一次性，永久保存，Chrome 重啟後仍在）**：
+
+1. Chrome 開啟 `chrome://extensions`
+2. 右上角開啟「開發者模式」
+3. 點「載入未封裝項目」，選擇
+   `%APPDATA%\npm\node_modules\@opencode-ai\browser-control\extension\dist`
+4. 驗證：`browser-control status` → `Extension: connected (0.0.25)`
+
+需要時可用 `../opencode-browser/scripts/start-browser-control.ps1` 檢查狀態
+（該腳本會在未安裝時印出上述指引）。
+
+> 從 Chrome Web Store 安裝的 Browser Control 版本（ID `gmjpoplfomnnjipeiojccjbpjlodkjhn`）
+> relay 也接受，但本機受網路管制無法從 Web Store 下載。
 
 ## 本機驗證（2026-10-23）
 

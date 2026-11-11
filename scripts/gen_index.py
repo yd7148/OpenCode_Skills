@@ -53,6 +53,8 @@ MEMBERSHIP: dict[str, str] = {
     "yt-batch-download": "media",
     "yt-upload": "media",
     "browser-control": "automation",
+    "browser-site-guides": "automation",
+    "browser-stack-routing": "automation",
     "opencode-browser": "automation",
     "open-computer-use": "automation",
     "web-tools": "automation",
@@ -81,6 +83,8 @@ NOT_INSTALLED: dict[str, str] = {
 DEPENDENCY: dict[str, str] = {
     "astro-dev": "純知識（來源 opencodeskills.dev）",
     "browser-control": "瀏覽器自動化：browser-control CLI / MCP、ffmpeg",
+    "browser-site-guides": "瀏覽器自動化：browser-control CLI（擴充須自備，無額外安裝）",
+    "browser-stack-routing": "瀏覽器自動化：bsk CLI、browser-control MCP、opencode-browser 外掛（三軌擇一）",
     "cloudflare-platform": "雲端服務：wrangler / Cloudflare 帳號",
     "cv-job-application": "瀏覽器自動化：Playwright CDP、ddddocr、EasyOCR、pymupdf",
     "dwg-to-dxf": "額外系統工具：ODA File Converter、Python ezdxf",

@@ -25,7 +25,7 @@ OpenCode 本機 Skills 收藏庫。所有 skill 皆為 MIT 授權，適用於 op
 ## 功能分類
 
 <!-- gen:readme-index:start -->
-共 **39 個 skill** 資料夾直接放在 Repo 根目錄；下方依功能分成 8 類。
+共 **41 個 skill** 資料夾直接放在 Repo 根目錄；下方依功能分成 8 類。
 
 | 分類 | 數量 |
 |---|---:|
@@ -33,7 +33,7 @@ OpenCode 本機 Skills 收藏庫。所有 skill 皆為 MIT 授權，適用於 op
 | 文件與會議紀錄 | 10 |
 | 考試與解題 | 1 |
 | 影音下載、處理與分析 | 7 |
-| 瀏覽器與桌面自動化 | 4 |
+| 瀏覽器與桌面自動化 | 6 |
 | 辦公、求職與商務 | 5 |
 | 開發工具與 Skill 管理 | 8 |
 | 圖像生成與桌寵 | 2 |
@@ -83,8 +83,10 @@ OpenCode 本機 Skills 收藏庫。所有 skill 皆為 MIT 授權，適用於 op
 | Skill | 平台 | 一句話說明 | 依賴／平台 |
 |---|:--:|---|---|
 | [`browser-control`](browser-control/SKILL.md) | 🍎 | Drive the user's existing Chromium-family browser with deterministic Playwright.  | 瀏覽器自動化：browser-control CLI / MCP、ffmpeg |
+| [`browser-site-guides`](browser-site-guides/SKILL.md) | 🍎 | Use when asked to "操作 gmail、linkedin、amazon、tiktok、xiaohongshu、bbc-news、google-maps 等特定網站"、或需要該網站的反爬／驗證／流程細節、…  | 瀏覽器自動化：browser-control CLI（擴充須自備，無額外安裝） |
+| [`browser-stack-routing`](browser-stack-routing/SKILL.md) | 🍎 | 決定本機五套瀏覽器／桌面自動化該用哪一套（browser-control、opencode-browser、browser-skill/bsk、chrome-devtools、open-computer-use），並強…  | 瀏覽器自動化：bsk CLI、browser-control MCP、opencode-browser 外掛（三軌擇一） |
 | [`open-computer-use`](open-computer-use/SKILL.md) | 🍎 | Platform-neutral guidance for using Open Computer Use, the open-source Computer Use MCP server and CLI for ma…  | npm 套件：open-computer-use（macOS 14+ 需授權） |
-| [`opencode-browser`](opencode-browser/SKILL.md) | 🍎 | 用 OpenCode 外掛 `@different-ai/opencode-browser`（OpenCode Browser）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿用同一個 prof…  | 瀏覽器自動化：OpenCode 外掛 @different-ai/opencode-browser + Node.js |
+| [`opencode-browser`](opencode-browser/SKILL.md) | 🍎 | 用 OpenCode 外掛 `@different-ai/opencode-browser`（native messaging + broker）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿…  | 瀏覽器自動化：OpenCode 外掛 @different-ai/opencode-browser + Node.js |
 | [`web-tools`](web-tools/SKILL.md) | 🍎 | Use when the user needs to fetch web pages or automate a browser.  | 瀏覽器自動化：Crawl4AI venv、Playwright（Firefox） |
 
 ### 辦公、求職與商務
@@ -162,7 +164,7 @@ python3 -m venv .venv
 | 重型機器學習（各 skill 專用 venv） | `exam-report`、`pdf-reader`、`video-analysis` |
 | 需額外系統工具 | `comfyui-qwen-image-edit`、`dwg-to-dxf`、`mate-engine`、`on24-video-download`、`takeout-exif-merge`、`yt-batch-download` |
 | 需 npm 套件 | `open-computer-use`、`opencode-session-auto-name`、`pptx`、`xlsx` |
-| 瀏覽器自動化 | `browser-control`、`cv-job-application`、`micron-job-search`、`opencode-browser`、`web-tools`、`yt-upload` |
+| 瀏覽器自動化 | `browser-control`、`browser-site-guides`、`browser-stack-routing`、`cv-job-application`、`micron-job-search`、`opencode-browser`、`web-tools`、`yt-upload` |
 | 需 WebUI 環境 | `sd-webui-vae-fix` |
 | 需雲端服務 | `cloudflare-platform`、`yd7148-portfolio-deploy` |
 | **未分類（需補 DEPENDENCY）** | `astro-dev`、`line-group-export-analysis` |
@@ -189,15 +191,17 @@ python3 -m venv .venv
 
 
 
-## Skill 分類索引（39 個）
+## Skill 分類索引（41 個）
 
 <!-- gen:readme-all:start -->
-共 39 個 skill。
+共 41 個 skill。
 
 | Skill | 平台 | 說明 |
 |---|:--:|---|
 | [`astro-dev`](astro-dev/SKILL.md) | 🍎 | \|- Build and debug Astro sites: content collections, islands architecture, rendering modes, and image/SEO bas…  |
 | [`browser-control`](browser-control/SKILL.md) | 🍎 | Drive the user's existing Chromium-family browser with deterministic Playwright.  |
+| [`browser-site-guides`](browser-site-guides/SKILL.md) | 🍎 | Use when asked to "操作 gmail、linkedin、amazon、tiktok、xiaohongshu、bbc-news、google-maps 等特定網站"、或需要該網站的反爬／驗證／流程細節、…  |
+| [`browser-stack-routing`](browser-stack-routing/SKILL.md) | 🍎 | 決定本機五套瀏覽器／桌面自動化該用哪一套（browser-control、opencode-browser、browser-skill/bsk、chrome-devtools、open-computer-use），並強…  |
 | [`cloudflare-platform`](cloudflare-platform/SKILL.md) | 🍎 | Use when building or deploying on Cloudflare's core platform — Workers, Pages, KV, R2, D1, AI, or networking…  |
 | [`comfyui-qwen-image-edit`](comfyui-qwen-image-edit/SKILL.md) | 🍎 | 用 ComfyUI + Qwen-Image-2.1 做圖像編輯（改圖／換裝／服裝轉移／多圖參考）與文生圖，產出可直接拖入 ComfyUI 的工作流 JSON，並用 /prompt API 批次執行。涵蓋兩個會「不報錯…  |
 | [`cv-job-application`](cv-job-application/SKILL.md) | 🪟 | Use when 投遞或填寫 中華電信/台積電 線上履歷、要操作 rmis.cht.com.tw 報名表（自動填表、附件上傳、狀態檢核）、要沿用已保存的 Chrome 登入資訊（.pw-profile）登入、需要把台積…  |
@@ -216,7 +220,7 @@ python3 -m venv .venv
 | [`news-weekly-docx-move`](news-weekly-docx-move/SKILL.md) | 🪟 | Use when the user asks to bulk-move, copy, collect, or sync the weekly news review .docx files (個人週報 新聞(OK).d…  |
 | [`on24-video-download`](on24-video-download/SKILL.md) | 🍎 | 下載 ON24 線上研討會活動（event.on24.com）的影片、投影片與字幕，並從下載的主影片自動提取「投影片 PDF / 投影片影片 / 時間軸摘要」。涵蓋公開媒體組態 API、download/CDN URL…  |
 | [`open-computer-use`](open-computer-use/SKILL.md) | 🍎 | Platform-neutral guidance for using Open Computer Use, the open-source Computer Use MCP server and CLI for ma…  |
-| [`opencode-browser`](opencode-browser/SKILL.md) | 🍎 | 用 OpenCode 外掛 `@different-ai/opencode-browser`（OpenCode Browser）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿用同一個 prof…  |
+| [`opencode-browser`](opencode-browser/SKILL.md) | 🍎 | 用 OpenCode 外掛 `@different-ai/opencode-browser`（native messaging + broker）控制使用者「既有」的 Chrome／Edge／Chromium 視窗，沿…  |
 | [`opencode-session-auto-name`](opencode-session-auto-name/SKILL.md) | 🍎 | 讓 opencode 的 session 標題自動以「第一次 prompt 的總結」命名（或進行中 todo）。使用本 skill 內建的 OpenCode V2 plugin（0 Token、純規則式、與模型無關、零…  |
 | [`opencode-usage`](opencode-usage/SKILL.md) | 🍎 | Monitor and report OpenCode usage, quota, and local resource consumption.  |
 | [`pdf-reader`](pdf-reader/SKILL.md) | 🍎 | 讀取 PDF 檔案的內容並輸出成 Markdown 摘要報告。文字型 PDF 用 PyMuPDF 直接抽取（含中文）；掃描/圖片型 PDF 自動渲染成 PNG 並以 RapidOCR 辨識；輸出以 opencc 轉為繁…  |
